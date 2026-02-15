@@ -33,7 +33,7 @@ cp .env.example .env
 
 The project includes a `Makefile` with common tasks:
 
-- `make build` – Build the Go binary into `bin/amartha`.
+- `make build` – Build the Go binary into `bin/billing_service` (or `bin/$APP_NAME`).
 - `make run` – Run the API server with `go run cmd/server/main.go`.
 - `make test` – Run all Go tests (`go test ./...`).
 - `make docker-build` – Build the Docker image for the application.
@@ -56,6 +56,17 @@ make docker-up
 make migrate-db   # only needed the first time or after cleanup
 ```
 
+## Project Structure
+
+- `cmd/server` – application entrypoint, loads env, wiring, and graceful HTTP shutdown.
+- `config/db` – PostgreSQL connection factory using `sqlx`.
+- `internal/handler` – HTTP handlers and Gin router.
+- `internal/service` – core business logic for borrowers, loans, and payments.
+- `internal/repository` – data access layer for Postgres.
+- `internal/model` – shared domain models and request/response payloads.
+- `migrations` – SQL migrations for schema and sample data.
+- `postman.json` – Postman collection with example API requests.
+
 ## Database Migrations
 
 Migrations are plain SQL files:
@@ -72,20 +83,17 @@ Router: `internal/handler/router.go`
 ### Borrowers
 
 - `POST /api/v1/borrowers` – create a borrower.
-- `GET /api/v1/borrowers/:id/loans` – list loans for a borrower.
+- `GET /api/v1/borrowers?borrower_id={id}&page={n}&page_size={m}` – list loans for a borrower with basic pagination.
 
 ### Loans
 
-- `POST /api/v1/loans` – create a new loan for a borrower.
-- `GET /api/v1/loans/:id/outstanding` – get outstanding amount for a loan.
-- `GET /api/v1/loans/:id/delinquent` – check if a loan is delinquent.
+- `POST /api/v1/loans` – create a new loan for a borrower and generate weekly billing schedules.
 
 ### Payments
 
-- `POST /api/v1/loans/:id/payment` – make a weekly payment against a loan.
+- `POST /api/v1/payment` – make a weekly payment against a loan.
 
 The payment logic lives in `internal/service/payment_service/payment_service.go` and updates both the billing schedule and loan status.
-
 
 ## AI USAGE
 
