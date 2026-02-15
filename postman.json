@@ -1,0 +1,111 @@
+{
+  "info": {
+    "name": "Billing Engine API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "loan_id",
+      "value": "1"
+    },
+    {
+      "key": "borrower_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Create Loan",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"borrower_id\": 1, \"amount\": 5000000}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/loans",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "loans"]
+        }
+      }
+    },
+    {
+      "name": "Create Borrower",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"John Doe\", \"email\": \"john@example.com\"}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/borrowers",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "borrowers"]
+        }
+      }
+    },
+    {
+      "name": "List Borrower Loans",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/borrowers?borrower_id={{borrower_id}}&page=1&page_size=10",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "borrowers"],
+          "query": [
+            {
+              "key": "borrower_id",
+              "value": "{{borrower_id}}"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "page_size",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Make Payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"loanID\": {{loan_id}}, \"amount\": 110000}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/payment",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "payment"]
+        }
+      }
+    }
+  ]
+}
